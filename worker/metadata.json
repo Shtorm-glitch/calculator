@@ -1,0 +1,20 @@
+{
+  "main_module": "src/index.js",
+  "bindings": [
+    {
+      "type": "kv_namespace",
+      "name": "FARM_CODES",
+      "namespace_id": "8a8cc1606fc341fa9f3fc7a6c3fcf163"
+    },
+    {
+      "type": "plain_text",
+      "name": "LATEST_VERSION",
+      "text": "v1.0.0"
+    },
+    {
+      "type": "plain_text",
+      "name": "APP_URL",
+      "text": "https://shtorm-glitch.github.io/calculator/app/"
+    }
+  ]
+}

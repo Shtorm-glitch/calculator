@@ -1,0 +1,11 @@
+name = "farm-activate"
+main = "./src/index.js"
+compatibility_date = "2026-06-19"
+
+[vars]
+LATEST_VERSION = "v1.0.0"
+APP_URL = "https://shtorm-glitch.github.io/calculator/app/"
+
+[[kv_namespaces]]
+binding = "FARM_CODES"
+id = "8a8cc1606fc341fa9f3fc7a6c3fcf163"

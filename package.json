@@ -1,0 +1,11 @@
+{
+  "name": "farm-calculator",
+  "private": true,
+  "version": "1.0.0",
+  "packageManager": "pnpm@9.15.4",
+  "scripts": {
+    "build": "pnpm --dir pwa build",
+    "generate:icons": "node scripts/generate-icons.mjs",
+    "release:pwa": "node scripts/release-pwa.mjs"
+  }
+}
