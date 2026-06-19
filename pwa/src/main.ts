@@ -92,6 +92,7 @@ window.addEventListener("appinstalled", () => {
 });
 window.matchMedia("(display-mode: standalone)").addEventListener("change", () => render());
 window.addEventListener("resize", () => fitToViewport());
+window.visualViewport?.addEventListener("resize", () => fitToViewport());
 
 checkVersion();
 render();
@@ -137,13 +138,14 @@ function fitToViewport(): void {
   window.requestAnimationFrame(() => {
     const shell = document.querySelector<HTMLElement>(".shell");
     if (!shell) return;
-    const shouldScale = isStandaloneMode() && window.matchMedia("(min-width: 720px)").matches && !state.modal;
+    const isNarrow = window.matchMedia("(max-width: 520px)").matches;
+    const shouldScale = !state.modal && (isNarrow || (isStandaloneMode() && window.matchMedia("(min-width: 720px)").matches));
     shell.style.setProperty("--app-scale", "1");
     document.body.classList.remove("is-scaled");
     if (!shouldScale) return;
 
     const height = shell.scrollHeight;
-    const available = window.innerHeight - 4;
+    const available = Math.floor(window.visualViewport?.height || window.innerHeight) - 4;
     if (height <= available) return;
 
     const scale = Math.min(1, available / height);
@@ -320,6 +322,7 @@ function modalView(): string {
   if (state.modal === "result-soft") return resultScaleModal("KPI 1 AV", "result-soft");
   if (state.modal === "result-medium") return resultScaleModal("KPI 2 total", "result-medium");
   if (state.modal === "result-kpi3") return resultScaleModal("KPI 3", "result-kpi3");
+  if (state.modal === "install-help") return installHelpModal();
   if (state.modal === "save") return saveModal();
   if (state.modal.startsWith("saved:")) return savedDetailsModal(Number(state.modal.split(":")[1]));
   if (state.modal.startsWith("delete:")) return deleteModal(Number(state.modal.split(":")[1]));
@@ -402,6 +405,34 @@ function saveModal(): string {
           <small data-save-error></small>
         </label>
         <button class="primary" data-action="confirm-save">Сохранить</button>
+      </section>
+    </div>
+  `;
+}
+
+function installHelpModal(): string {
+  const isAndroid = /Android/i.test(navigator.userAgent);
+  return `
+    <div class="modal-backdrop">
+      <section class="sheet install-help-sheet">
+        <header><h2>Установка Farm</h2><button class="icon-button" data-close><i data-icon="x"></i></button></header>
+        <div class="install-help">
+          ${
+            isAndroid
+              ? `
+                <p>Если системное окно установки не открылось, установи Farm через меню Chrome.</p>
+                <ol>
+                  <li>Нажми меню Chrome ⋮</li>
+                  <li>Выбери «Добавить на главный экран» или «Установить приложение»</li>
+                  <li>Подтверди установку</li>
+                </ol>
+              `
+              : `
+                <p>Чтобы установить Farm на iPhone, открой меню «Поделиться» и выбери «На экран Домой».</p>
+              `
+          }
+        </div>
+        <button class="primary" data-close>Понятно</button>
       </section>
     </div>
   `;
@@ -698,20 +729,13 @@ function bindEvents(): void {
     });
   });
   document.querySelectorAll<HTMLElement>("[data-action='install-pwa']").forEach((el) => {
-    el.addEventListener("click", async (event) => {
+    const runInstall = async (event: Event) => {
       event.preventDefault();
       event.stopPropagation();
-      if (!state.installPrompt) {
-        showToast(installFallbackMessage());
-        return;
-      }
-      state.installPrompt.prompt();
-      await state.installPrompt.userChoice;
-      state.installPrompt = null;
-      state.installBannerDismissed = true;
-      sessionStorage.setItem("farm.installBannerDismissed", "true");
-      render();
-    });
+      await requestInstall();
+    };
+    el.addEventListener("click", runInstall);
+    el.addEventListener("touchend", runInstall, { passive: false });
   });
   document.querySelectorAll<HTMLElement>("[data-action='dismiss-install-banner']").forEach((el) => {
     el.addEventListener("click", (event) => {
@@ -788,6 +812,20 @@ function showToast(message: string): void {
     state.toast = "";
     render();
   }, 1800);
+}
+
+async function requestInstall(): Promise<void> {
+  if (!state.installPrompt) {
+    state.modal = "install-help";
+    render();
+    return;
+  }
+  state.installPrompt.prompt();
+  await state.installPrompt.userChoice;
+  state.installPrompt = null;
+  state.installBannerDismissed = true;
+  sessionStorage.setItem("farm.installBannerDismissed", "true");
+  render();
 }
 
 async function checkVersion(): Promise<void> {
