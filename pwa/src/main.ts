@@ -191,8 +191,8 @@ function installBanner(): string {
   if (state.installBannerDismissed || isStandaloneMode()) return "";
   return `
     <div class="install-banner">
-      <button data-action="install-pwa">Установить как приложение</button>
-      <button class="install-banner__close" data-action="dismiss-install-banner" aria-label="Скрыть"><i data-icon="x"></i></button>
+      <button type="button" data-action="install-pwa">Установить как приложение</button>
+      <button type="button" class="install-banner__close" data-action="dismiss-install-banner" aria-label="Скрыть"><i data-icon="x"></i></button>
     </div>
   `;
 }
@@ -271,7 +271,7 @@ function settingsScreen(): string {
         ${state.installPrompt ? `
           <div class="settings-note install-note">
             <span>Farm можно установить как приложение на этом устройстве</span>
-            <button class="primary small" data-action="install-pwa">Установить Farm</button>
+            <button type="button" class="primary small" data-action="install-pwa">Установить Farm</button>
           </div>
         ` : ""}
       </section>
@@ -698,9 +698,11 @@ function bindEvents(): void {
     });
   });
   document.querySelectorAll<HTMLElement>("[data-action='install-pwa']").forEach((el) => {
-    el.addEventListener("click", async () => {
+    el.addEventListener("click", async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
       if (!state.installPrompt) {
-        showToast("Чтобы установить Farm на iPhone: Поделиться → На экран «Домой»");
+        showToast(installFallbackMessage());
         return;
       }
       state.installPrompt.prompt();
@@ -712,7 +714,9 @@ function bindEvents(): void {
     });
   });
   document.querySelectorAll<HTMLElement>("[data-action='dismiss-install-banner']").forEach((el) => {
-    el.addEventListener("click", () => {
+    el.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
       state.installBannerDismissed = true;
       sessionStorage.setItem("farm.installBannerDismissed", "true");
       render();
@@ -925,4 +929,10 @@ function escapeHtml(value: string): string {
 
 function escapeAttr(value: string): string {
   return escapeHtml(value);
+}
+
+function installFallbackMessage(): string {
+  const ua = navigator.userAgent;
+  if (/Android/i.test(ua)) return "В Chrome: меню ⋮ → Добавить на главный экран";
+  return "Чтобы установить Farm на iPhone: Поделиться → На экран «Домой»";
 }

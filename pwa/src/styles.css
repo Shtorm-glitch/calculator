@@ -637,6 +637,8 @@ hr {
   grid-template-columns: 1fr auto;
   gap: 8px;
   margin: 0 0 12px;
+  position: relative;
+  z-index: 5;
 }
 
 .install-banner button {
@@ -646,6 +648,8 @@ hr {
   background: var(--accent);
   color: #fff;
   font-weight: 850;
+  pointer-events: auto;
+  touch-action: manipulation;
 }
 
 .install-banner__close {
@@ -819,5 +823,155 @@ hr {
     align-items: center;
     justify-items: center;
     padding: 16px;
+  }
+}
+
+@media (max-width: 430px) {
+  .shell {
+    padding: calc(8px + env(safe-area-inset-top)) 10px calc(72px + env(safe-area-inset-bottom));
+  }
+
+  .topbar {
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .topbar h1 {
+    font-size: 24px;
+  }
+
+  .eyebrow {
+    margin-bottom: 2px;
+    font-size: 13px;
+  }
+
+  .app-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 11px;
+  }
+
+  .stack,
+  .settings-list,
+  .saved-list {
+    gap: 8px;
+  }
+
+  .salary-card,
+  .weights-card,
+  .kpi-card,
+  .saved-row,
+  .settings-group,
+  .result-card {
+    border-width: 1px;
+  }
+
+  .salary-card,
+  .saved-row {
+    padding: 11px 12px;
+    min-height: 48px;
+  }
+
+  .salary-card strong {
+    font-size: 19px;
+  }
+
+  .weights-card,
+  .kpi-card,
+  .settings-group,
+  .result-card {
+    padding: 10px;
+  }
+
+  .weights-grid {
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  .weights-grid div {
+    padding: 7px 6px;
+  }
+
+  .weights-grid small,
+  .salary-card span,
+  .weights-card > span,
+  .kpi-card span,
+  .field span {
+    font-size: 12px;
+  }
+
+  .kpi-grid {
+    gap: 8px;
+  }
+
+  .kpi-card {
+    gap: 7px;
+  }
+
+  .kpi-card > div {
+    grid-template-columns: 50px 1fr;
+  }
+
+  .result-line {
+    padding: 5px 0;
+    column-gap: 6px;
+  }
+
+  .result-line.has-actions {
+    grid-template-columns: auto minmax(4px, 1fr) auto minmax(4px, 1fr) auto minmax(76px, auto);
+  }
+
+  .result-line em,
+  .result-line b {
+    font-size: 14px;
+  }
+
+  .scale-link,
+  .result-kpi-button {
+    min-height: 28px;
+    padding: 0 8px;
+    font-size: 13px;
+  }
+
+  .result-kpi-button {
+    gap: 3px;
+  }
+
+  .install-banner {
+    margin-bottom: 8px;
+  }
+
+  .install-banner button {
+    min-height: 40px;
+    font-size: 14px;
+  }
+
+  .install-banner__close {
+    width: 40px;
+  }
+
+  .primary,
+  .secondary,
+  .danger {
+    min-height: 40px;
+    padding: 0 12px;
+  }
+
+  .bottom-nav {
+    gap: 4px;
+    padding: 6px max(8px, env(safe-area-inset-left)) calc(6px + env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-right));
+  }
+
+  .bottom-nav button {
+    min-height: 48px;
+    font-size: 11px;
+  }
+
+  .toast {
+    width: min(360px, calc(100vw - 24px));
+    bottom: calc(68px + env(safe-area-inset-bottom));
+    border-radius: 12px;
+    text-align: center;
+    font-size: 13px;
   }
 }
