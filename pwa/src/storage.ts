@@ -62,7 +62,10 @@ export function applyActivationFromUrl(): boolean {
   const version = params.get("activate");
   if (!version) return false;
 
-  localStorage.setItem(keys.activation, version);
+  const previousVersion = localStorage.getItem(keys.activation);
+  if (previousVersion !== version) {
+    localStorage.setItem(keys.activation, version);
+  }
   if (!shouldKeepActivationUrl()) {
     history.replaceState(null, "", location.pathname + location.hash);
   }

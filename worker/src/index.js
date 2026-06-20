@@ -33,7 +33,7 @@ export default {
       : `Калькулятор обновлен до ${escapeHtml(record.version)}`;
     const appUrl = activationUrl(env.APP_URL, record.version);
 
-    return html(page("Farm", message, appUrl));
+    return html(page("Farm", message, appUrl, record.version));
   }
 };
 
@@ -54,9 +54,25 @@ function activationUrl(appUrl, version) {
   return url.toString();
 }
 
-function page(title, message, appUrl) {
+function page(title, message, appUrl, version) {
   const button = appUrl
     ? `<a class="button" href="${escapeAttr(appUrl)}">Открыть калькулятор</a>`
+    : "";
+  const repeatedActivationScript = appUrl && version
+    ? `<script>
+      (() => {
+        try {
+          const version = ${JSON.stringify(version)};
+          const appUrl = ${JSON.stringify(appUrl)};
+          const key = "farm.workerActivatedVersion";
+          if (localStorage.getItem(key) === version) {
+            location.replace(appUrl);
+            return;
+          }
+          localStorage.setItem(key, version);
+        } catch (_) {}
+      })();
+    </script>`
     : "";
 
   return `<!doctype html>
@@ -137,6 +153,7 @@ function page(title, message, appUrl) {
       <p>${message}</p>
       ${button}
     </main>
+    ${repeatedActivationScript}
   </body>
 </html>`;
 }
