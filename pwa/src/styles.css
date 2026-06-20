@@ -29,12 +29,17 @@
   box-sizing: border-box;
 }
 
+html {
+  overflow-x: hidden;
+}
+
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
   background: var(--bg);
   color: var(--text);
+  overflow-x: hidden;
 }
 
 body.is-scaled {
@@ -65,10 +70,6 @@ button:disabled {
   margin: 0 auto;
   transform: scale(var(--app-scale));
   transform-origin: top center;
-}
-
-body.is-scaled .shell {
-  width: calc(100% / var(--app-scale));
 }
 
 .topbar {

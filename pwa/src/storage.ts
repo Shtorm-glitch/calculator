@@ -63,7 +63,9 @@ export function applyActivationFromUrl(): boolean {
   if (!version) return false;
 
   localStorage.setItem(keys.activation, version);
-  history.replaceState(null, "", location.pathname + location.hash);
+  if (!shouldKeepActivationUrl()) {
+    history.replaceState(null, "", location.pathname + location.hash);
+  }
   return true;
 }
 
@@ -103,4 +105,10 @@ function readJson<T>(key: string, fallback: T): T {
 
 function writeJson(key: string, value: unknown): void {
   localStorage.setItem(key, JSON.stringify(value));
+}
+
+function shouldKeepActivationUrl(): boolean {
+  const standalone = window.matchMedia("(display-mode: standalone)").matches || (navigator as Navigator & { standalone?: boolean }).standalone === true;
+  const isiOS = /iPad|iPhone|iPod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  return isiOS && !standalone;
 }

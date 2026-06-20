@@ -668,6 +668,14 @@ function bindEvents(): void {
       }
     });
   });
+  document.querySelectorAll<HTMLInputElement>("[data-save-name]").forEach((el) => {
+    el.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        confirmSave();
+      }
+    });
+  });
   document.querySelectorAll<HTMLElement>("[data-close-kpi3]").forEach((el) => {
     el.addEventListener("click", () => {
       if (!isValidKpi3Plan(state.input.plan3)) setInput({ plan3: state.lastValidKpi3Plan || "30" });
