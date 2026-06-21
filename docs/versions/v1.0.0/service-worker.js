@@ -1,4 +1,4 @@
-const CACHE_NAME = "farm-v1.0.0-r8";
+const CACHE_NAME = "farm-v1.0.0-r9";
 const APP_SHELL = [
   "./",
   "./index.html",
