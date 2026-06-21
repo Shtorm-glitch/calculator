@@ -59,6 +59,17 @@ function writeActivationEntry(appDir, version) {
   const indexPath = path.join(appDir, "index.html");
   const activationDir = path.join(appDir, "a", version);
   mkdirSync(activationDir, { recursive: true });
-  const indexHtml = readFileSync(indexPath, "utf8").replace("<head>", "<head>\n    <base href=\"../../\" />");
+  const manifest = JSON.parse(readFileSync(path.join(appDir, "manifest.webmanifest"), "utf8"));
+  manifest.start_url = "./";
+  manifest.scope = "./";
+  manifest.icons = manifest.icons.map((icon) => ({
+    ...icon,
+    src: icon.src.replace(/^\.\//, "../../")
+  }));
+  writeFileSync(path.join(activationDir, "manifest.webmanifest"), `${JSON.stringify(manifest, null, 2)}\n`);
+
+  const indexHtml = readFileSync(indexPath, "utf8")
+    .replace("<head>", "<head>\n    <base href=\"../../\" />")
+    .replace("href=\"./manifest.webmanifest\"", `href="./a/${version}/manifest.webmanifest"`);
   writeFileSync(path.join(activationDir, "index.html"), indexHtml);
 }
