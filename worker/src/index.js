@@ -50,7 +50,9 @@ async function readActivationCode(env, code) {
 
 function activationUrl(appUrl, version) {
   const url = new URL(appUrl);
-  url.searchParams.set("activate", version);
+  url.pathname = `${url.pathname.replace(/\/$/, "")}/a/${encodeURIComponent(version)}/`;
+  url.search = "";
+  url.hash = "";
   return url.toString();
 }
 

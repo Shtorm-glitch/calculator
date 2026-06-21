@@ -1,7 +1,9 @@
-const CACHE_NAME = "farm-v1.0.0-r6";
+const CACHE_NAME = "farm-v1.0.0-r7";
 const APP_SHELL = [
   "./",
   "./index.html",
+  "./a/v1.0.0/",
+  "./a/v1.0.0/index.html",
   "./manifest.webmanifest",
   "./icons/icon-180.png",
   "./icons/icon-192.png",

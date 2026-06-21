@@ -59,7 +59,7 @@ export function ensureLocalActivation(): void {
 
 export function applyActivationFromUrl(): boolean {
   const params = new URLSearchParams(location.search);
-  const version = params.get("activate");
+  const version = params.get("activate") || activationVersionFromPath();
   if (!version) return false;
 
   const previousVersion = localStorage.getItem(keys.activation);
@@ -114,4 +114,9 @@ function shouldKeepActivationUrl(): boolean {
   const standalone = window.matchMedia("(display-mode: standalone)").matches || (navigator as Navigator & { standalone?: boolean }).standalone === true;
   const isiOS = /iPad|iPhone|iPod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
   return isiOS && !standalone;
+}
+
+function activationVersionFromPath(): string | null {
+  const match = location.pathname.match(/\/app\/a\/(v\d+\.\d+\.\d+)\/?$/);
+  return match?.[1] || null;
 }

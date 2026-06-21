@@ -36,6 +36,7 @@ rmSync(app, { recursive: true, force: true });
 rmSync(versionDir, { recursive: true, force: true });
 cpSync(dist, app, { recursive: true });
 cpSync(dist, versionDir, { recursive: true });
+writeActivationEntry(app, version);
 
 const rl = readline.createInterface({ input, output });
 const answer = await rl.question(`Обновить docs/latest.json до ${version} (${releasedAt})? [y/N] `);
@@ -52,4 +53,12 @@ function hasCommand(command) {
   const checker = process.platform === "win32" ? "where" : "command";
   const args = process.platform === "win32" ? [command] : ["-v", command];
   return spawnSync(checker, args, { stdio: "ignore", shell: process.platform !== "win32" }).status === 0;
+}
+
+function writeActivationEntry(appDir, version) {
+  const indexPath = path.join(appDir, "index.html");
+  const activationDir = path.join(appDir, "a", version);
+  mkdirSync(activationDir, { recursive: true });
+  const indexHtml = readFileSync(indexPath, "utf8").replace("<head>", "<head>\n    <base href=\"../../\" />");
+  writeFileSync(path.join(activationDir, "index.html"), indexHtml);
 }

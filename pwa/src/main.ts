@@ -882,8 +882,15 @@ function parseVersion(version: string): { major: number; minor: number; patch: n
 
 function registerServiceWorker(): void {
   if ("serviceWorker" in navigator && location.protocol !== "file:") {
-    window.addEventListener("load", () => navigator.serviceWorker.register("./service-worker.js"));
+    window.addEventListener("load", () => navigator.serviceWorker.register(appUrl("service-worker.js")));
   }
+}
+
+function appUrl(file: string): string {
+  const marker = "/app/";
+  const index = location.pathname.indexOf(marker);
+  const appPath = index >= 0 ? location.pathname.slice(0, index + marker.length) : "./";
+  return new URL(file, location.origin + appPath).toString();
 }
 
 function isStandaloneMode(): boolean {
