@@ -968,8 +968,8 @@ hr {
   }
 
   .result-line {
-    padding: 4px 0;
-    column-gap: 5px;
+    padding: 5px 0;
+    column-gap: 6px;
   }
 
   .result-line.has-actions {
@@ -983,13 +983,13 @@ hr {
 
   .scale-link,
   .result-kpi-button {
-    min-height: 26px;
-    padding: 0 7px;
-    font-size: 12px;
+    min-height: 34px;
+    padding: 0 10px;
+    font-size: 14px;
   }
 
   .result-kpi-button {
-    gap: 3px;
+    gap: 4px;
   }
 
   .install-banner {
