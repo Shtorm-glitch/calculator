@@ -1487,33 +1487,37 @@ private fun calculate(input: CalcInput): CalcResult {
 }
 
 private fun scaleCoefficient(ratio: Double): Double {
+    val percent = ratioPercent(ratio)
     return when {
-        ratio <= 0.69 -> 0.0
-        ratio in 0.70..0.74 -> 0.20
-        ratio in 0.75..0.79 -> 0.25
-        ratio in 0.80..0.84 -> 0.35
-        ratio in 0.85..0.89 -> 1.0 - (1.0 - ratio) * 2.0
-        ratio in 0.90..0.99 -> 1.0 - (1.0 - ratio) * 3.0
-        ratio in 1.00..1.14 -> 1.0 + (ratio - 1.0) * 3.0
-        ratio in 1.15..1.20 -> 1.42 + (ratio - 1.14) * 2.0
-        else -> 1.54 + (ratio - 1.20) * 0.5
+        percent <= 69 -> 0.0
+        percent <= 74 -> 0.20
+        percent <= 79 -> 0.25
+        percent <= 84 -> 0.35
+        percent <= 89 -> (70 - (90 - percent) * 2) / 100.0
+        percent <= 99 -> (100 - (100 - percent) * 3) / 100.0
+        percent <= 114 -> (100 + (percent - 100) * 3) / 100.0
+        percent <= 120 -> (142 + (percent - 114) * 2) / 100.0
+        else -> (154 + (percent - 120) * 0.5) / 100.0
     }
 }
 
 private fun mediumScaleCoefficient(ratio: Double): Double {
+    val percent = ratioPercent(ratio)
     return when {
-        ratio <= 0.79 -> 0.0
-        ratio in 0.80..0.84 -> 0.20
-        ratio in 0.85..0.89 -> 0.30
-        ratio in 0.90..0.94 -> 1.0 - (1.0 - ratio) * 4.0
-        ratio in 0.95..0.99 -> 1.0 - (1.0 - ratio) * 5.0
-        ratio in 1.00..1.05 -> 1.0 + (ratio - 1.0) * 5.0
-        ratio in 1.06..1.10 -> 1.25 + (ratio - 1.05) * 4.0
-        ratio in 1.11..1.20 -> 1.45 + (ratio - 1.10) * 3.0
-        ratio in 1.21..1.29 -> 1.75 + (ratio - 1.20)
-        else -> 1.84 + (ratio - 1.29) * 0.5
+        percent <= 79 -> 0.0
+        percent <= 84 -> 0.20
+        percent <= 89 -> 0.30
+        percent <= 94 -> (75 - (95 - percent) * 4) / 100.0
+        percent <= 99 -> (100 - (100 - percent) * 5) / 100.0
+        percent <= 105 -> (100 + (percent - 100) * 5) / 100.0
+        percent <= 110 -> (125 + (percent - 105) * 4) / 100.0
+        percent <= 120 -> (145 + (percent - 110) * 3) / 100.0
+        percent <= 129 -> (175 + (percent - 120)) / 100.0
+        else -> (184 + (percent - 129) * 0.5) / 100.0
     }
 }
+
+private fun ratioPercent(ratio: Double): Int = floor(ratio * 100.0 + 1e-9).toInt()
 
 private fun weightedBase(salary: String, weight: String): Double {
     return salary.toDoubleOrNull().orZero() * weight.toDoubleOrNull().orZero() / 100.0
@@ -1558,7 +1562,7 @@ private fun resultScaleRows(currentPercent: Int, baseBonus: Double, kind: ScaleK
         }
         return ResultScaleRow(
             percent = percent,
-            target = "${floor(coefficient * 100).toInt()}%",
+            target = "${floor(coefficient * 100 + 1e-9).toInt()}%",
             bonus = formatRub(floor(baseBonus * coefficient).toInt()),
             tone = when {
                 percent > 100 -> ScaleTone.Positive

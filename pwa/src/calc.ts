@@ -108,26 +108,32 @@ export function calculate(input: CalcInput): CalcResult {
 }
 
 export function scaleCoefficient(ratio: number): number {
-  if (ratio <= 0.69) return 0.0;
-  if (ratio >= 0.70 && ratio <= 0.74) return 0.20;
-  if (ratio >= 0.75 && ratio <= 0.79) return 0.25;
-  if (ratio >= 0.80 && ratio <= 0.84) return 0.35;
-  if (ratio >= 0.85 && ratio <= 0.89) return 1.0 - (1.0 - ratio) * 2.0;
-  if (ratio >= 0.90 && ratio <= 0.99) return 1.0 - (1.0 - ratio) * 3.0;
-  if (ratio >= 1.00 && ratio <= 1.14) return 1.0 + (ratio - 1.0) * 3.0;
-  if (ratio >= 1.15 && ratio <= 1.20) return 1.42 + (ratio - 1.14) * 2.0;
-  return 1.54 + (ratio - 1.20) * 0.5;
+  const percent = ratioPercent(ratio);
+  if (percent <= 69) return 0.0;
+  if (percent <= 74) return 0.20;
+  if (percent <= 79) return 0.25;
+  if (percent <= 84) return 0.35;
+  if (percent <= 89) return (70 - (90 - percent) * 2) / 100;
+  if (percent <= 99) return (100 - (100 - percent) * 3) / 100;
+  if (percent <= 114) return (100 + (percent - 100) * 3) / 100;
+  if (percent <= 120) return (142 + (percent - 114) * 2) / 100;
+  return (154 + (percent - 120) * 0.5) / 100;
 }
 
 export function mediumScaleCoefficient(ratio: number): number {
-  if (ratio <= 0.79) return 0.0;
-  if (ratio >= 0.80 && ratio <= 0.84) return 0.20;
-  if (ratio >= 0.85 && ratio <= 0.89) return 0.30;
-  if (ratio >= 0.90 && ratio <= 0.94) return 1.0 - (1.0 - ratio) * 4.0;
-  if (ratio >= 0.95 && ratio <= 0.99) return 1.0 - (1.0 - ratio) * 5.0;
-  if (ratio >= 1.00 && ratio <= 1.05) return 1.0 + (ratio - 1.0) * 5.0;
-  if (ratio >= 1.06 && ratio <= 1.10) return 1.25 + (ratio - 1.05) * 4.0;
-  if (ratio >= 1.11 && ratio <= 1.20) return 1.45 + (ratio - 1.10) * 3.0;
-  if (ratio >= 1.21 && ratio <= 1.29) return 1.75 + (ratio - 1.20);
-  return 1.84 + (ratio - 1.29) * 0.5;
+  const percent = ratioPercent(ratio);
+  if (percent <= 79) return 0.0;
+  if (percent <= 84) return 0.20;
+  if (percent <= 89) return 0.30;
+  if (percent <= 94) return (75 - (95 - percent) * 4) / 100;
+  if (percent <= 99) return (100 - (100 - percent) * 5) / 100;
+  if (percent <= 105) return (100 + (percent - 100) * 5) / 100;
+  if (percent <= 110) return (125 + (percent - 105) * 4) / 100;
+  if (percent <= 120) return (145 + (percent - 110) * 3) / 100;
+  if (percent <= 129) return (175 + (percent - 120)) / 100;
+  return (184 + (percent - 129) * 0.5) / 100;
+}
+
+function ratioPercent(ratio: number): number {
+  return Math.floor(ratio * 100 + 1e-9);
 }

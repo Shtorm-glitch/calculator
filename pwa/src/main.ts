@@ -629,7 +629,7 @@ function makeResultScaleRow(
   coefficient: (ratio: number) => number,
   current: boolean
 ): ResultScaleRow {
-  const target = Math.floor(coefficient(percent / 100) * 100);
+  const target = Math.floor(coefficient(percent / 100) * 100 + 1e-9);
   return {
     percent,
     target: `${target}%`,
